@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { createChart, CrosshairMode } from "lightweight-charts";
 import { priceData } from "./mockData/priceData";
+import {
+  ChartCard,
+  CandleChart,
+  ChartButton,
+  ChartText,
+  ChartTopContainer,
+  ChartTextContainer,
+} from "./styles/ChartCard.styled";
 // import { areaData } from './areaData';
 
 export default function Chart() {
@@ -26,7 +34,7 @@ export default function Chart() {
       width: chartContainerRef.current.clientWidth,
       height: chartContainerRef.current.clientHeight,
       layout: {
-        backgroundColor: "#253248",
+        backgroundColor: "#1e2126",
         textColor: "rgba(255, 255, 255, 0.9)",
       },
       grid: {
@@ -73,7 +81,7 @@ export default function Chart() {
         color: "orange",
         visible: true,
         text: "bestcloudfor.me",
-        fontSize: 18,
+        fontSize: 20,
         horzAlign: "right",
         vertAlign: "bottom",
       },
@@ -108,28 +116,44 @@ export default function Chart() {
     });
 
     // const areaSeries = chart.current.addAreaSeries({
-    //   topColor: 'rgba(38,198,218, 0.56)',
-    //   bottomColor: 'rgba(38,198,218, 0.04)',
-    //   lineColor: 'rgba(38,198,218, 1)',
-    //   lineWidth: 2
+    //   topColor: "rgba(38,198,218, 0.56)",
+    //   bottomColor: "rgba(38,198,218, 0.04)",
+    //   lineColor: "rgba(38,198,218, 1)",
+    //   lineWidth: 2,
     // });
 
-    // areaSeries.setData(areaData);
+    // areaSeries.setData(
+    //   priceData.map((prevValue) => {
+    //     return {
+    //       ...prevValue,
+    //       time: Date.parse(prevValue.date) / 1000,
+    //       value: prevValue.close,
+    //     };
+    //   })
+    // );
 
-    //const volumeSeries = chart.current.addHistogramSeries({
-    //  color: '#182233',
-    //  lineWidth: 2,
-    //  priceFormat: {
-    //    type: 'volume',
-    //  },
-    //  overlay: true,
+    // const volumeSeries = chart.current.addHistogramSeries({
+    //   color: "#182233",
+    //   lineWidth: 2,
+    //   priceFormat: {
+    //     type: "volume",
+    //   },
+    //   overlay: true,
     //   scaleMargins: {
-    //     top: 0.8,
+    //     top: 0.9,
     //     bottom: 0,
     //   },
     // });
 
-    // volumeSeries.setData(volumeData);
+    // volumeSeries.setData(
+    //   priceData.map((prevValue) => {
+    //     return {
+    //       ...prevValue,
+    //       time: Date.parse(prevValue.date) / 1000,
+    //       value: prevValue.close,
+    //     };
+    //   })
+    // );
     return () => {
       chart.current.remove();
     };
@@ -148,21 +172,32 @@ export default function Chart() {
     resizeObserver.current.observe(chartContainerRef.current);
 
     return () => resizeObserver.current.disconnect();
-  }, []);
+  }, [reset]);
 
   return (
-    <>
-      <h1>TRY/USD</h1>
-      <h2>{price.toFixed(2)} TL</h2>
-      <h4>{focusedDate}</h4>
-      <button
-        onClick={() => {
-          setReset(!reset);
-        }}
-      >
-        Reset
-      </button>
-      <div ref={chartContainerRef} className="chart-container" />
-    </>
+    <ChartCard>
+      <ChartTopContainer>
+        <ChartTextContainer>
+          <ChartText fontSize="1.5em" fontWeight="500">
+            TRY/USD
+          </ChartText>
+          <ChartText fontSize="2em" fontWeight="600">
+            {price.toFixed(2)} TL
+          </ChartText>
+          <ChartText fontSize="1em" fontWeight="300">
+            {focusedDate}
+          </ChartText>
+        </ChartTextContainer>
+        <ChartButton
+          onClick={() => {
+            setReset(!reset);
+          }}
+        >
+          Reset
+        </ChartButton>
+      </ChartTopContainer>
+
+      <CandleChart ref={chartContainerRef} />
+    </ChartCard>
   );
 }
