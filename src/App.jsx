@@ -1,11 +1,11 @@
 import GlobalStyles from "./components/styles/Global.styled";
-import Chart from "./components/Chart";
+import ChartContainer from "./components/ChartContainer";
 
 function App() {
   return (
     <>
       <GlobalStyles />
-      <Chart />
+      <ChartContainer />
     </>
   );
 }
