@@ -17,7 +17,7 @@ export default function ColumnChart() {
     day: "numeric",
   };
   const lastDate = Date.parse(priceData[priceData.length - 1].date);
-  const { reset } = useSelector((state) => state.chart);
+  const { reset, base } = useSelector((state) => state.chart);
 
   useEffect(() => {
     chart.current = createChart(chartContainerRef.current, {
@@ -38,13 +38,7 @@ export default function ColumnChart() {
       crosshair: {
         mode: CrosshairMode.Normal,
       },
-      rightPriceScale: {
-        scaleMargins: {
-          top: 0.4,
-          bottom: 0,
-        },
-        borderVisible: false,
-      },
+
       timeScale: {
         borderColor: "transparent",
       },
@@ -66,16 +60,20 @@ export default function ColumnChart() {
         timeVisible: true,
         secondsVisible: true,
       },
+      rightPriceScale: {
+        priceScaleId: "right",
+        scaleMargins: {
+          top: 0.32,
+          bottom: 0,
+        },
+      },
     });
 
     const volumeSeries = chart.current.addHistogramSeries({
       color: "#7CE0D6",
+      base: base,
       priceFormat: {
         type: "price",
-      },
-      scaleMargins: {
-        top: 0,
-        bottom: 0.5,
       },
       lineColor: "#7CE0D6",
       lineWidth: 3,
@@ -115,7 +113,6 @@ export default function ColumnChart() {
         dispatch(updateFocusedDate(date));
       }
     });
-
     return () => {
       chart.current.remove();
     };
