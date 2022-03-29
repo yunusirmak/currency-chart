@@ -22,6 +22,7 @@ export const chartSlice = createSlice({
     focusedDate: new Date(lastDate).toLocaleDateString("tr-TR", dateOptions),
     chartType: "candle",
     base: baseStart,
+    dateType: "day",
   },
   reducers: {
     updateReset: (state) => {
@@ -36,9 +37,17 @@ export const chartSlice = createSlice({
     updateChartType: (state, action) => {
       state.chartType = action.payload;
     },
+    updateDateType: (state, action) => {
+      state.dateType = action.payload;
+    },
   },
 });
 
-export const { updateReset, updatePrice, updateFocusedDate, updateChartType } =
-  chartSlice.actions;
+export const {
+  updateReset,
+  updatePrice,
+  updateFocusedDate,
+  updateChartType,
+  updateDateType,
+} = chartSlice.actions;
 export default chartSlice.reducer;
