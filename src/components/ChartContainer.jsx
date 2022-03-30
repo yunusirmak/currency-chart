@@ -3,6 +3,7 @@ import {
   ChartText,
   ChartTopContainer,
   ChartTextContainer,
+  PriceContainer,
 } from "./styles/ChartCard.styled";
 import { useDispatch, useSelector } from "react-redux";
 import ChartTypeToggler from "./ChartTypeToggler";
@@ -41,12 +42,14 @@ export default function ChartContainer() {
     range,
     ticker,
     freq,
+    pending,
+    error,
+    dateType,
   } = useSelector((state) => state.chart);
 
   const handleChange = (event) => {
     dispatch(updateTicker(event.target.value));
   };
-  const [tickerName, setTickerName] = useState("USD/TRY");
 
   const darkTheme = createTheme({
     palette: {
@@ -61,6 +64,7 @@ export default function ChartContainer() {
       },
     },
   });
+  const [tickerName, setTickerName] = useState("USD/TRY");
 
   function changeTickerName(ticker) {
     if (ticker === "usdtry") {
@@ -78,14 +82,48 @@ export default function ChartContainer() {
     }
   }
 
-  useEffect(() => {
-    updateData(
-      ticker,
-      firstDate.toISOString(),
-      lastDate.toISOString(),
-      freq,
-      dispatch
+  function toIsoString(date) {
+    var tzo = -date.getTimezoneOffset(),
+      dif = tzo >= 0 ? "+" : "-",
+      pad = function (num) {
+        return (num < 10 ? "0" : "") + num;
+      };
+
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth() + 1) +
+      "-" +
+      pad(date.getDate()) +
+      "T" +
+      pad(date.getHours()) +
+      ":" +
+      pad(date.getMinutes()) +
+      ":" +
+      pad(date.getSeconds()) +
+      dif +
+      pad(Math.floor(Math.abs(tzo) / 60)) +
+      ":" +
+      pad(Math.abs(tzo) % 60)
     );
+  }
+
+  useEffect(() => {
+    dateType === "day"
+      ? updateData(
+          ticker,
+          toIsoString(firstDate),
+          toIsoString(lastDate),
+          freq,
+          dispatch
+        )
+      : updateData(
+          ticker,
+          toIsoString(range[0]),
+          toIsoString(range[1]),
+          freq,
+          dispatch
+        );
     changeTickerName(ticker);
   }, [ticker]);
 
@@ -93,45 +131,58 @@ export default function ChartContainer() {
     <ThemeProvider theme={darkTheme}>
       <ChartCard>
         <ChartTopContainer>
-          <ChartTextContainer>
-            <ChartText fontSize="1em" fontWeight="400">
-              {tickerName}
-            </ChartText>
-            <ChartText fontSize="2em" fontWeight="600">
-              {price.toFixed(2)}
-            </ChartText>
-            <ChartText fontSize="0.8em" fontWeight="300">
-              {focusedDate}
-            </ChartText>
-          </ChartTextContainer>
-          <FormControl>
-            <InputLabel>Currency</InputLabel>
-            <Select
-              value={ticker}
-              label="Currency"
-              sx={{ width: 130, height: 40 }}
-              onChange={handleChange}
-            >
-              <MenuItem value={"usdtry"}>USD/TRY</MenuItem>
-              <MenuItem value={"usdjpy"}>USD/JPY</MenuItem>
-              <MenuItem value={"usdcad"}>USD/CAD</MenuItem>
-              <MenuItem value={"usdchf"}>USD/CHF</MenuItem>
-              <MenuItem value={"usdpln"}>USD/PLN</MenuItem>
-              <MenuItem value={"usdmxn"}>USD/MXN</MenuItem>
-            </Select>
-          </FormControl>
+          <PriceContainer>
+            <ChartTextContainer>
+              <ChartText fontSize="1em" fontWeight="400">
+                {tickerName}
+              </ChartText>
+              <ChartText fontSize="2em" fontWeight="600">
+                {price.toFixed(2)}
+              </ChartText>
+              <ChartText fontSize="0.8em" fontWeight="300">
+                {focusedDate}
+              </ChartText>
+            </ChartTextContainer>
+            <FormControl>
+              <InputLabel>Currency</InputLabel>
+              <Select
+                value={ticker}
+                label="Currency"
+                sx={{ width: 130, height: 40 }}
+                onChange={handleChange}
+              >
+                <MenuItem value={"usdtry"}>USD/TRY</MenuItem>
+                <MenuItem value={"usdjpy"}>USD/JPY</MenuItem>
+                <MenuItem value={"usdcad"}>USD/CAD</MenuItem>
+                <MenuItem value={"usdchf"}>USD/CHF</MenuItem>
+                <MenuItem value={"usdpln"}>USD/PLN</MenuItem>
+                <MenuItem value={"usdmxn"}>USD/MXN</MenuItem>
+              </Select>
+            </FormControl>
 
-          {/* <ChartButton
+            {/* <ChartButton
           onClick={() => {
             dispatch(updateReset());
           }}
         >
           Reset
         </ChartButton> */}
+          </PriceContainer>
           <ChartTypeToggler />
         </ChartTopContainer>
 
-        {chartType === "candle" ? (
+        {error ? (
+          <h2
+            style={{
+              height: 500,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            Verilen Tarih Aralığında Veri Bulunamadı...
+          </h2>
+        ) : chartType === "candle" ? (
           <CandleStickChart />
         ) : chartType === "bar" ? (
           <ColumnChart />

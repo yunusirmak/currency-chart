@@ -14,7 +14,7 @@ export const chartSlice = createSlice({
     firstDate: new Date(Date.now() - 86400000),
     lastDate: new Date(),
     freq: "15min",
-    range: [0, 0],
+    range: [new Date(Date.now() - 86400000), new Date()],
     pending: false,
     error: false,
   },

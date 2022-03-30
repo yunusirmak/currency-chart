@@ -38,7 +38,6 @@ export const updateData = async (
     );
     dispatch(updateChartData(values.data));
     const priceData = values.data;
-    const lastDate = Date.parse(priceData[priceData.length - 1].date);
     const closeValues = priceData.map((values) => values.close);
     const min = Math.min(...closeValues);
     const max = Math.max(...closeValues);
@@ -47,7 +46,7 @@ export const updateData = async (
     dispatch(updatePrice(priceData[priceData.length - 1].close));
     dispatch(
       updateFocusedDate(
-        new Date(lastDate).toLocaleDateString("tr-TR", dateOptions)
+        new Date(endDate).toLocaleDateString("tr-TR", dateOptions)
       )
     );
     dispatch(updateBase(baseStart));

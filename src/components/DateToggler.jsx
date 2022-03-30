@@ -24,7 +24,7 @@ import {
 } from "../redux/chartSlice";
 import { useDispatch, useSelector } from "react-redux";
 //styled components
-import { ChartBottomContainer, ChartButton } from "./styles/ChartCard.styled";
+import { ChartBottomContainer, DateContainer } from "./styles/ChartCard.styled";
 //date-fns
 import trLocale from "date-fns/locale/tr";
 //api call
@@ -45,6 +45,31 @@ export default function DateToggler() {
   const maskMap = {
     tr: "__.__.____",
   };
+  function toIsoString(date) {
+    var tzo = -date.getTimezoneOffset(),
+      dif = tzo >= 0 ? "+" : "-",
+      pad = function (num) {
+        return (num < 10 ? "0" : "") + num;
+      };
+
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth() + 1) +
+      "-" +
+      pad(date.getDate()) +
+      "T" +
+      pad(date.getHours()) +
+      ":" +
+      pad(date.getMinutes()) +
+      ":" +
+      pad(date.getSeconds()) +
+      dif +
+      pad(Math.floor(Math.abs(tzo) / 60)) +
+      ":" +
+      pad(Math.abs(tzo) % 60)
+    );
+  }
   const dispatch = useDispatch();
   const {
     price,
@@ -60,21 +85,19 @@ export default function DateToggler() {
   } = useSelector((state) => state.chart);
 
   useEffect(() => {
-    console.log(lastDate.toISOString());
     dateType === "day" &&
       dispatch(updateFirstDate(new Date(lastDate.getTime() - 86400000)));
   }, [lastDate]);
 
-  useEffect(() => {
-    console.log(firstDate.toISOString());
-    dateType === "day" && dispatch(updateRange([firstDate, lastDate]));
-  }, [firstDate]);
+  // useEffect(() => {
+  //   dateType === "day" && dispatch(updateRange([firstDate, lastDate]));
+  // }, [firstDate]);
 
   useEffect(() => {
     if (dateType === "day") {
       dispatch(updateFreq("15min"));
     } else {
-      dispatch(updateFreq("1day"));
+      dispatch(updateFreq("12hour"));
     }
   }, [dateType]);
 
@@ -84,14 +107,23 @@ export default function DateToggler() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    updateData(
-      ticker,
-      firstDate.toISOString(),
-      lastDate.toISOString(),
-      freq,
-      dispatch
-    );
+    dateType === "day"
+      ? updateData(
+          ticker,
+          toIsoString(firstDate),
+          toIsoString(lastDate),
+          freq,
+          dispatch
+        )
+      : updateData(
+          ticker,
+          toIsoString(range[0]),
+          toIsoString(range[1]),
+          freq,
+          dispatch
+        );
   }
+  const [dateError, setDateError] = useState(false);
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -104,56 +136,61 @@ export default function DateToggler() {
             <CalendarMonthIcon />
           </ToggleButton>
         </ToggleButtonGroup>
-        <LocalizationProvider
-          dateAdapter={AdapterDateFns}
-          locale={localeMap["tr"]}
-        >
-          {dateType === "day" ? (
-            <MobileDatePicker
-              label="Tarih"
-              value={lastDate}
-              minDate={new Date("2005-01-01")}
-              maxDate={new Date()}
-              onChange={(newValue) => {
-                dispatch(updateLastDate(newValue));
-              }}
-              renderInput={(params) => (
-                <TextField {...params} sx={{ width: 150 }} />
-              )}
-              mask={maskMap["tr"]}
-            />
-          ) : (
-            <MobileDateRangePicker
-              startText="Başlangıç"
-              endText="Bitiş"
-              showClearButton={true}
-              value={range}
-              minDate={new Date("2005-01-01")}
-              maxDate={new Date()}
-              mask={maskMap["tr"]}
-              onChange={(newValue) => {
-                dispatch(updateRange(newValue));
-                dispatch(updateFirstDate(newValue[0]));
-                dispatch(updateLastDate(newValue[1]));
-              }}
-              renderInput={(startProps, endProps) => (
-                <>
-                  <TextField {...startProps} sx={{ width: 120 }} />
-                  <Box sx={{ mx: 1 }}> - </Box>
-                  <TextField {...endProps} sx={{ width: 120 }} />
-                </>
-              )}
-            />
-          )}
-        </LocalizationProvider>
-        <Button
-          onClick={(e) => handleSubmit(e)}
-          variant="outlined"
-          size="large"
-          sx={{ color: "white" }}
-        >
-          <UpdateIcon />
-        </Button>
+        <DateContainer>
+          <LocalizationProvider
+            dateAdapter={AdapterDateFns}
+            locale={localeMap["tr"]}
+          >
+            {dateType === "day" ? (
+              <MobileDatePicker
+                label="Tarih"
+                value={lastDate}
+                minDate={new Date("2020-01-01")}
+                maxDate={new Date()}
+                onChange={(newValue, error) => {
+                  error ? setDateError(true) : setDateError(false);
+                  dateError === false && dispatch(updateLastDate(newValue));
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} sx={{ width: 150 }} />
+                )}
+                mask={maskMap["tr"]}
+              />
+            ) : (
+              <MobileDateRangePicker
+                startText="Başlangıç"
+                endText="Bitiş"
+                showClearButton={true}
+                value={range}
+                minDate={new Date("2005-01-01")}
+                maxDate={new Date()}
+                mask={maskMap["tr"]}
+                onError={(error) => {
+                  error ? setDateError(true) : setDateError(false);
+                }}
+                onChange={(newValue, error) => {
+                  error ? setDateError(true) : setDateError(false);
+                  dateError === false && dispatch(updateRange(newValue));
+                }}
+                renderInput={(startProps, endProps) => (
+                  <>
+                    <TextField {...startProps} sx={{ width: 120 }} />
+                    <Box sx={{ mx: 1 }}> - </Box>
+                    <TextField {...endProps} sx={{ width: 120 }} />
+                  </>
+                )}
+              />
+            )}
+          </LocalizationProvider>
+          <Button
+            onClick={(e) => handleSubmit(e)}
+            variant="outlined"
+            size="large"
+            sx={{ color: "white" }}
+          >
+            <UpdateIcon />
+          </Button>
+        </DateContainer>
       </ChartBottomContainer>
     </ThemeProvider>
   );
