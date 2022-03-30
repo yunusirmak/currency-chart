@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { createChart, CrosshairMode } from "lightweight-charts";
-import { priceData } from "./mockData/priceData";
 import { CandleChart } from "./styles/ChartCard.styled";
 import { updatePrice, updateFocusedDate } from "../redux/chartSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,13 +10,12 @@ export default function ColumnChart() {
   const resizeObserver = useRef(null);
   const dispatch = useDispatch();
   const dateOptions = {
-    weekday: "long",
+    weekday: "short",
     year: "numeric",
     month: "long",
     day: "numeric",
   };
-  const lastDate = Date.parse(priceData[priceData.length - 1].date);
-  const { reset, base } = useSelector((state) => state.chart);
+  const { chartData, base, lastDate } = useSelector((state) => state.chart);
 
   useEffect(() => {
     chart.current = createChart(chartContainerRef.current, {
@@ -79,7 +77,7 @@ export default function ColumnChart() {
     });
 
     volumeSeries.setData(
-      priceData.map((prevValue) => {
+      chartData.map((prevValue) => {
         return {
           ...prevValue,
           time: Date.parse(prevValue.date) / 1000,
@@ -97,7 +95,7 @@ export default function ColumnChart() {
         point.y < 0 ||
         point.y > chart.current.height
       ) {
-        dispatch(updatePrice(priceData[priceData.length - 1].close));
+        dispatch(updatePrice(chartData[chartData.length - 1].close));
         dispatch(
           updateFocusedDate(
             new Date(lastDate).toLocaleDateString("tr-TR", dateOptions)
@@ -115,7 +113,7 @@ export default function ColumnChart() {
     return () => {
       chart.current.remove();
     };
-  }, [reset]);
+  }, [chartData]);
 
   // Resize chart on container resizes.
   useEffect(() => {
@@ -130,7 +128,7 @@ export default function ColumnChart() {
     resizeObserver.current.observe(chartContainerRef.current);
 
     return () => resizeObserver.current.disconnect();
-  }, [reset]);
+  }, [chartData]);
 
   return <CandleChart ref={chartContainerRef} />;
 }

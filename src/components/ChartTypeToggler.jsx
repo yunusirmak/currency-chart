@@ -25,14 +25,14 @@ export default function ColorToggleButton() {
   return (
     <ThemeProvider theme={darkTheme}>
       <ToggleButtonGroup value={chartType} exclusive onChange={handleChange}>
-        <ToggleButton value="candle">
-          <CandlestickChartIcon />
+        <ToggleButton value="area">
+          <ShowChartIcon />
         </ToggleButton>
         <ToggleButton value="bar">
           <BarChartIcon />
         </ToggleButton>
-        <ToggleButton value="area">
-          <ShowChartIcon />
+        <ToggleButton value="candle">
+          <CandlestickChartIcon />
         </ToggleButton>
       </ToggleButtonGroup>
     </ThemeProvider>

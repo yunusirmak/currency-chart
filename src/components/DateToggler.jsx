@@ -10,17 +10,25 @@ import UpdateIcon from "@mui/icons-material/Update";
 import TextField from "@mui/material/TextField";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
-import DateRangePicker from "@mui/lab/DateRangePicker";
+import MobileDatePicker from "@mui/lab/DesktopDatePicker";
+import MobileDateRangePicker from "@mui/lab/DateRangePicker";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 //redux
-import { updateDateType } from "../redux/chartSlice";
+import {
+  updateDateType,
+  updateFirstDate,
+  updateRange,
+  updateLastDate,
+  updateFreq,
+} from "../redux/chartSlice";
 import { useDispatch, useSelector } from "react-redux";
 //styled components
 import { ChartBottomContainer, ChartButton } from "./styles/ChartCard.styled";
 //date-fns
 import trLocale from "date-fns/locale/tr";
+//api call
+import { updateData } from "../redux/apiCall";
 
 export default function DateToggler() {
   const darkTheme = createTheme({
@@ -38,23 +46,52 @@ export default function DateToggler() {
     tr: "__.__.____",
   };
   const dispatch = useDispatch();
-  const { dateType } = useSelector((state) => state.chart);
-  const [lastDay, setLastDay] = useState(new Date());
-  const [firstDay, setFirstDay] = useState(new Date(Date.now() - 86400000));
-  const [range, setRange] = useState([firstDay, lastDay]);
+  const {
+    price,
+    dateType,
+    focusedDate,
+    chartType,
+    chartData,
+    firstDate,
+    lastDate,
+    range,
+    ticker,
+    freq,
+  } = useSelector((state) => state.chart);
 
   useEffect(() => {
-    console.log(lastDay.toISOString());
-    dateType === "day" && setFirstDay(new Date(lastDay.getTime() - 86400000));
-  }, [lastDay]);
+    console.log(lastDate.toISOString());
+    dateType === "day" &&
+      dispatch(updateFirstDate(new Date(lastDate.getTime() - 86400000)));
+  }, [lastDate]);
 
   useEffect(() => {
-    console.log(firstDay.toISOString());
-  }, [firstDay]);
+    console.log(firstDate.toISOString());
+    dateType === "day" && dispatch(updateRange([firstDate, lastDate]));
+  }, [firstDate]);
+
+  useEffect(() => {
+    if (dateType === "day") {
+      dispatch(updateFreq("15min"));
+    } else {
+      dispatch(updateFreq("1day"));
+    }
+  }, [dateType]);
 
   const handleChange = (event, newType) => {
     dispatch(updateDateType(newType));
   };
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    updateData(
+      ticker,
+      firstDate.toISOString(),
+      lastDate.toISOString(),
+      freq,
+      dispatch
+    );
+  }
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -72,13 +109,13 @@ export default function DateToggler() {
           locale={localeMap["tr"]}
         >
           {dateType === "day" ? (
-            <DesktopDatePicker
+            <MobileDatePicker
               label="Tarih"
-              value={lastDay}
+              value={lastDate}
               minDate={new Date("2005-01-01")}
               maxDate={new Date()}
               onChange={(newValue) => {
-                setLastDay(newValue);
+                dispatch(updateLastDate(newValue));
               }}
               renderInput={(params) => (
                 <TextField {...params} sx={{ width: 150 }} />
@@ -86,14 +123,18 @@ export default function DateToggler() {
               mask={maskMap["tr"]}
             />
           ) : (
-            <DateRangePicker
+            <MobileDateRangePicker
               startText="Başlangıç"
               endText="Bitiş"
+              showClearButton={true}
               value={range}
               minDate={new Date("2005-01-01")}
               maxDate={new Date()}
+              mask={maskMap["tr"]}
               onChange={(newValue) => {
-                setRange(newValue);
+                dispatch(updateRange(newValue));
+                dispatch(updateFirstDate(newValue[0]));
+                dispatch(updateLastDate(newValue[1]));
               }}
               renderInput={(startProps, endProps) => (
                 <>
@@ -105,7 +146,12 @@ export default function DateToggler() {
             />
           )}
         </LocalizationProvider>
-        <Button variant="outlined" size="large" sx={{ color: "white" }}>
+        <Button
+          onClick={(e) => handleSubmit(e)}
+          variant="outlined"
+          size="large"
+          sx={{ color: "white" }}
+        >
           <UpdateIcon />
         </Button>
       </ChartBottomContainer>

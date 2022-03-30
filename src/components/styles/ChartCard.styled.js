@@ -47,6 +47,7 @@ export const ChartTextContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  width: 150px;
 `;
 export const ChartTopContainer = styled.div`
   display: flex;

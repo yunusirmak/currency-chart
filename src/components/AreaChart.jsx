@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { createChart, CrosshairMode } from "lightweight-charts";
-import { priceData } from "./mockData/priceData";
 import { CandleChart } from "./styles/ChartCard.styled";
 import { updatePrice, updateFocusedDate } from "../redux/chartSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,13 +10,12 @@ export default function AreaChart() {
   const resizeObserver = useRef(null);
   const dispatch = useDispatch();
   const dateOptions = {
-    weekday: "long",
+    weekday: "short",
     year: "numeric",
     month: "long",
     day: "numeric",
   };
-  const lastDate = Date.parse(priceData[priceData.length - 1].date);
-  const { reset, base } = useSelector((state) => state.chart);
+  const { chartData, lastDate } = useSelector((state) => state.chart);
 
   useEffect(() => {
     chart.current = createChart(chartContainerRef.current, {
@@ -62,30 +60,7 @@ export default function AreaChart() {
       },
     });
 
-    // const volumeSeries = chart.current.addHistogramSeries({
-    //   color: "#7CE0D6",
-    //   base: base,
-    //   priceFormat: {
-    //     type: "price",
-    //   },
-    //   lineColor: "#7CE0D6",
-    //   lineWidth: 3,
-    // });
-
-    // volumeSeries.setData(
-    //   priceData.map((prevValue) => {
-    //     return {
-    //       ...prevValue,
-    //       time: Date.parse(prevValue.date) / 1000,
-    //       value: prevValue.close,
-    //     };
-    //   })
-    // );
-
     const areaSeries = chart.current.addAreaSeries({
-      //   topColor: "rgba(38,198,218, 0.56)",
-      //   bottomColor: "rgba(38,198,218, 0.04)",
-      //   lineColor: "rgba(38,198,218, 1)",
       topColor: "rgba(75,255,181,0.56)",
       bottomColor: "rgba(75,255,181,0.04)",
       lineColor: "rgba(75,255,181,1)",
@@ -93,7 +68,7 @@ export default function AreaChart() {
     });
 
     areaSeries.setData(
-      priceData.map((prevValue) => {
+      chartData.map((prevValue) => {
         return {
           ...prevValue,
           time: Date.parse(prevValue.date) / 1000,
@@ -111,7 +86,7 @@ export default function AreaChart() {
         point.y < 0 ||
         point.y > chart.current.height
       ) {
-        dispatch(updatePrice(priceData[priceData.length - 1].close));
+        dispatch(updatePrice(chartData[chartData.length - 1].close));
         dispatch(
           updateFocusedDate(
             new Date(lastDate).toLocaleDateString("tr-TR", dateOptions)
@@ -129,7 +104,7 @@ export default function AreaChart() {
     return () => {
       chart.current.remove();
     };
-  }, [reset]);
+  }, [chartData]);
 
   // Resize chart on container resizes.
   useEffect(() => {
@@ -144,7 +119,7 @@ export default function AreaChart() {
     resizeObserver.current.observe(chartContainerRef.current);
 
     return () => resizeObserver.current.disconnect();
-  }, [reset]);
+  }, [chartData]);
 
   return <CandleChart ref={chartContainerRef} />;
 }
