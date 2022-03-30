@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/currency-chart/static/js/main.ffe6f692.js",
+    "index.html": "/currency-chart/index.html",
+    "main.ffe6f692.js.map": "/currency-chart/static/js/main.ffe6f692.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.ffe6f692.js"
+  ]
+}
