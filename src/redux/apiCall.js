@@ -28,7 +28,7 @@ export const updateData = async (
   dispatch(updateStart());
   try {
     const values = await axios.get(
-      `${baseURL}/${ticker}/prices?startDate=${startDate}&endDate=${endDate}&resampleFreq=${freq}&token=${apiKey}`,
+      `${baseURL}/${ticker}/startDate=${startDate}&endDate=${endDate}&resampleFreq=${freq}&token=${apiKey}`,
       {
         headers: {
           accept: "*/*",
