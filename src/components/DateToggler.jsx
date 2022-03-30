@@ -71,27 +71,14 @@ export default function DateToggler() {
     );
   }
   const dispatch = useDispatch();
-  const {
-    price,
-    dateType,
-    focusedDate,
-    chartType,
-    chartData,
-    firstDate,
-    lastDate,
-    range,
-    ticker,
-    freq,
-  } = useSelector((state) => state.chart);
+  const { dateType, firstDate, lastDate, range, ticker, freq } = useSelector(
+    (state) => state.chart
+  );
 
   useEffect(() => {
     dateType === "day" &&
       dispatch(updateFirstDate(new Date(lastDate.getTime() - 86400000)));
   }, [lastDate]);
-
-  // useEffect(() => {
-  //   dateType === "day" && dispatch(updateRange([firstDate, lastDate]));
-  // }, [firstDate]);
 
   useEffect(() => {
     if (dateType === "day") {

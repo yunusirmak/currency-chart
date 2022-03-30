@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { createChart, CrosshairMode } from "lightweight-charts";
 import { CandleChart } from "./styles/ChartCard.styled";
 import { updatePrice, updateFocusedDate } from "../redux/chartSlice";

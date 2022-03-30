@@ -22,13 +22,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 //react
 import { useEffect, useState } from "react";
 //redux
-import {
-  updateChartData,
-  updateFirstDate,
-  updateLastDate,
-  updateRange,
-  updateTicker,
-} from "../redux/chartSlice";
+import { updateTicker } from "../redux/chartSlice";
 
 export default function ChartContainer() {
   const dispatch = useDispatch();
@@ -36,13 +30,11 @@ export default function ChartContainer() {
     price,
     focusedDate,
     chartType,
-    chartData,
     firstDate,
     lastDate,
     range,
     ticker,
     freq,
-    pending,
     error,
     dateType,
   } = useSelector((state) => state.chart);
@@ -159,14 +151,6 @@ export default function ChartContainer() {
                 <MenuItem value={"usdmxn"}>USD/MXN</MenuItem>
               </Select>
             </FormControl>
-
-            {/* <ChartButton
-          onClick={() => {
-            dispatch(updateReset());
-          }}
-        >
-          Reset
-        </ChartButton> */}
           </PriceContainer>
           <ChartTypeToggler />
         </ChartTopContainer>
