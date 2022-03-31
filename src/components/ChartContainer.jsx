@@ -37,6 +37,7 @@ export default function ChartContainer() {
     freq,
     error,
     dateType,
+    pending,
   } = useSelector((state) => state.chart);
 
   const handleChange = (event) => {
@@ -165,6 +166,17 @@ export default function ChartContainer() {
             }}
           >
             Verilen Tarih Aralığında Veri Bulunamadı...
+          </h2>
+        ) : pending ? (
+          <h2
+            style={{
+              height: 500,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            Yükleniyor...
           </h2>
         ) : chartType === "candle" ? (
           <CandleStickChart />
