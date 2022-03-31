@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/currency-chart/static/js/main.f3d2eac4.js",
+    "index.html": "/currency-chart/index.html",
+    "main.f3d2eac4.js.map": "/currency-chart/static/js/main.f3d2eac4.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.f3d2eac4.js"
+  ]
+}
