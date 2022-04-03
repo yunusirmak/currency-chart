@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 export const chartSlice = createSlice({
   name: "chart",
   initialState: {
-    reset: false,
     price: 0,
     focusedDate: "",
     chartType: "area",
@@ -30,9 +29,6 @@ export const chartSlice = createSlice({
       state.chartData = action.payload;
       state.pending = false;
       action.payload === [] ? (state.error = true) : (state.error = false);
-    },
-    updateReset: (state) => {
-      state.reset = !state.reset;
     },
     updatePrice: (state, action) => {
       state.price = action.payload;
@@ -68,7 +64,6 @@ export const chartSlice = createSlice({
 });
 
 export const {
-  updateReset,
   updatePrice,
   updateFocusedDate,
   updateChartType,

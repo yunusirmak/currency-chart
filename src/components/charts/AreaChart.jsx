@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { createChart, CrosshairMode } from "lightweight-charts";
-import { CandleChart } from "./styles/ChartCard.styled";
-import { updatePrice, updateFocusedDate } from "../redux/chartSlice";
+import { CandleChart } from "../styles/ChartCard.styled";
+import { updatePrice, updateFocusedDate } from "../../redux/chartSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function AreaChart() {
@@ -42,8 +42,6 @@ export default function AreaChart() {
       },
     });
 
-    console.log(chart.current);
-
     chart.current.applyOptions({
       watermark: {
         color: "#eb872e",
@@ -70,7 +68,6 @@ export default function AreaChart() {
     areaSeries.setData(
       chartData.map((prevValue) => {
         return {
-          ...prevValue,
           time: Date.parse(prevValue.date) / 1000,
           value: prevValue.close,
         };
@@ -78,6 +75,7 @@ export default function AreaChart() {
     );
 
     chart.current.subscribeCrosshairMove(({ time, seriesPrices, point }) => {
+      // if point is out of range, display the last value. if not, display the value of the point.
       if (
         point === undefined ||
         !time ||

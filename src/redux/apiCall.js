@@ -1,4 +1,6 @@
+//Axios
 import axios from "axios";
+//Redux
 import {
   updateStart,
   updateError,
@@ -7,7 +9,7 @@ import {
   updateFocusedDate,
   updateBase,
 } from "./chartSlice";
-
+//Envoirment variables
 const baseURL = process.env.REACT_APP_BASE_URL;
 const apiKey = process.env.REACT_APP_API_KEY;
 
@@ -25,18 +27,17 @@ export const updateData = async (
   freq,
   dispatch
 ) => {
-  dispatch(updateStart());
+  dispatch(updateStart()); //dispatching the updateStart action. sets the state to pending: true
   try {
     const values = await axios.get(
       `${baseURL}/${ticker}/startDate=${startDate}&endDate=${endDate}&resampleFreq=${freq}&token=${apiKey}`,
       {
         headers: {
-          accept: "*/*",
           "Content-Type": "application/json",
         },
       }
     );
-    dispatch(updateChartData(values.data));
+    dispatch(updateChartData(values.data)); //dispatching the updateChartData action. sets the state to chartData: action.payload, pending: false, error: false
     const priceData = values.data;
     const closeValues = priceData.map((values) => values.close);
     const min = Math.min(...closeValues);

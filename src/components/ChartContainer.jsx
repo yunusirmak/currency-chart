@@ -1,3 +1,10 @@
+//Chart components
+import ChartTypeToggler from "./ChartTypeToggler";
+import ColumnChart from "./charts/ColumnChart";
+import CandleStickChart from "./charts/CandleStickChart";
+import AreaChart from "./charts/AreaChart";
+import DateToggler from "./DateToggler";
+//Styled Components
 import {
   ChartCard,
   ChartText,
@@ -5,26 +12,22 @@ import {
   ChartTextContainer,
   PriceContainer,
 } from "./styles/ChartCard.styled";
-import { useDispatch, useSelector } from "react-redux";
-import ChartTypeToggler from "./ChartTypeToggler";
-import ColumnChart from "./ColumnChart";
-import CandleStickChart from "./CandleStickChart";
-import AreaChart from "./AreaChart";
-import DateToggler from "./DateToggler";
-//api call
+//API call
 import { updateData } from "../redux/apiCall";
-//material ui
+//Material UI
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-//react
+//React
 import { useEffect, useState } from "react";
-//redux
+//Redux
 import { updateTicker } from "../redux/chartSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function ChartContainer() {
+  //Redux hooks
   const dispatch = useDispatch();
   const {
     price,
@@ -40,10 +43,12 @@ export default function ChartContainer() {
     pending,
   } = useSelector((state) => state.chart);
 
+  //Update current ticker (currency)
   const handleChange = (event) => {
     dispatch(updateTicker(event.target.value));
   };
 
+  //Material UI theme
   const darkTheme = createTheme({
     palette: {
       mode: "dark",
@@ -57,8 +62,10 @@ export default function ChartContainer() {
       },
     },
   });
+  //Ticker name on first load
   const [tickerName, setTickerName] = useState("USD/TRY");
 
+  //Change the ticker name depending on the currency
   function changeTickerName(ticker) {
     if (ticker === "usdtry") {
       setTickerName("USD/TRY");
@@ -75,6 +82,7 @@ export default function ChartContainer() {
     }
   }
 
+  //Turn the time data into a ISO string for the API call
   function toIsoString(date) {
     var tzo = -date.getTimezoneOffset(),
       dif = tzo >= 0 ? "+" : "-",
@@ -101,6 +109,7 @@ export default function ChartContainer() {
     );
   }
 
+  //If the date type is daily, send a daily request. If it is a range, send a range request.
   useEffect(() => {
     dateType === "day"
       ? updateData(
@@ -155,7 +164,7 @@ export default function ChartContainer() {
           </PriceContainer>
           <ChartTypeToggler />
         </ChartTopContainer>
-
+        {/* If there is an error, display the error message. If the request is pending, display the loading message. If everything is fine, display the selected chart */}
         {error ? (
           <h2
             style={{

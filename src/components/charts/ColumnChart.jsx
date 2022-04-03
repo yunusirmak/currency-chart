@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { createChart, CrosshairMode } from "lightweight-charts";
-import { CandleChart } from "./styles/ChartCard.styled";
-import { updatePrice, updateFocusedDate } from "../redux/chartSlice";
+import { CandleChart } from "../styles/ChartCard.styled";
+import { updatePrice, updateFocusedDate } from "../../redux/chartSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function ColumnChart() {
@@ -67,7 +67,7 @@ export default function ColumnChart() {
       },
     });
 
-    const volumeSeries = chart.current.addHistogramSeries({
+    const barSeries = chart.current.addHistogramSeries({
       color: "rgba(75,255,181,0.8)",
       base: base,
       priceFormat: {
@@ -76,10 +76,9 @@ export default function ColumnChart() {
       lineWidth: 3,
     });
 
-    volumeSeries.setData(
+    barSeries.setData(
       chartData.map((prevValue) => {
         return {
-          ...prevValue,
           time: Date.parse(prevValue.date) / 1000,
           value: prevValue.close,
         };
@@ -87,6 +86,7 @@ export default function ColumnChart() {
     );
 
     chart.current.subscribeCrosshairMove(({ time, seriesPrices, point }) => {
+      // if point is out of range, display the last value. if not, display the value of the point.
       if (
         point === undefined ||
         !time ||
@@ -106,7 +106,7 @@ export default function ColumnChart() {
           "tr-TR",
           dateOptions
         );
-        dispatch(updatePrice(seriesPrices.get(volumeSeries)));
+        dispatch(updatePrice(seriesPrices.get(barSeries)));
         dispatch(updateFocusedDate(date));
       }
     });

@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { createChart, CrosshairMode } from "lightweight-charts";
-import { CandleChart } from "./styles/ChartCard.styled";
-import { updatePrice, updateFocusedDate } from "../redux/chartSlice";
+import { CandleChart } from "../styles/ChartCard.styled";
+import { updatePrice, updateFocusedDate } from "../../redux/chartSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function CandleStickChart() {
@@ -45,8 +45,6 @@ export default function CandleStickChart() {
       },
     });
 
-    console.log(chart.current);
-
     const candleSeries = chart.current.addCandlestickSeries({
       upColor: "#4bffb5",
       downColor: "#ff4976",
@@ -82,6 +80,7 @@ export default function CandleStickChart() {
     });
 
     chart.current.subscribeCrosshairMove(({ time, seriesPrices, point }) => {
+      // if point is out of range, display the last value. if not, display the value of the point.
       if (
         point === undefined ||
         !time ||

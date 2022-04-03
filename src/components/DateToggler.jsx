@@ -1,4 +1,4 @@
-//react
+//React
 import { useEffect, useState } from "react";
 //Material UI
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -14,7 +14,7 @@ import MobileDatePicker from "@mui/lab/DesktopDatePicker";
 import MobileDateRangePicker from "@mui/lab/DateRangePicker";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-//redux
+//Redux
 import {
   updateDateType,
   updateFirstDate,
@@ -23,7 +23,7 @@ import {
   updateFreq,
 } from "../redux/chartSlice";
 import { useDispatch, useSelector } from "react-redux";
-//styled components
+//Styled Components
 import { ChartBottomContainer, DateContainer } from "./styles/ChartCard.styled";
 //date-fns
 import trLocale from "date-fns/locale/tr";
@@ -31,6 +31,7 @@ import trLocale from "date-fns/locale/tr";
 import { updateData } from "../redux/apiCall";
 
 export default function DateToggler() {
+  //Material UI theme
   const darkTheme = createTheme({
     palette: {
       mode: "dark",
@@ -39,12 +40,16 @@ export default function DateToggler() {
       },
     },
   });
+
+  //Map for the date-fns locale
   const localeMap = {
     tr: trLocale,
   };
   const maskMap = {
     tr: "__.__.____",
   };
+
+  //Turn the time data into a ISO string for the API call
   function toIsoString(date) {
     var tzo = -date.getTimezoneOffset(),
       dif = tzo >= 0 ? "+" : "-",
@@ -70,16 +75,20 @@ export default function DateToggler() {
       pad(Math.abs(tzo) % 60)
     );
   }
+
+  //Redux hooks
   const dispatch = useDispatch();
   const { dateType, firstDate, lastDate, range, ticker, freq } = useSelector(
     (state) => state.chart
   );
 
+  //If the date type is daily and lastDate has changed, update the firstDate and make it a day before lastDate
   useEffect(() => {
     dateType === "day" &&
       dispatch(updateFirstDate(new Date(lastDate.getTime() - 86400000)));
   }, [lastDate]);
 
+  //If the date type is daily set the frequency to 15 minutes. If it is a range, set the frequency to 12 hours.
   useEffect(() => {
     if (dateType === "day") {
       dispatch(updateFreq("15min"));
@@ -88,10 +97,12 @@ export default function DateToggler() {
     }
   }, [dateType]);
 
+  //Change the date type depending on the toggle button
   const handleChange = (event, newType) => {
     dispatch(updateDateType(newType));
   };
 
+  //If the date type is daily on submit, send a daily request. If it is a range, send a range request.
   function handleSubmit(event) {
     event.preventDefault();
     dateType === "day"
@@ -110,6 +121,7 @@ export default function DateToggler() {
           dispatch
         );
   }
+  //Error handling
   const [dateError, setDateError] = useState(false);
 
   return (
