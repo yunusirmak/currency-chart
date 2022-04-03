@@ -127,6 +127,7 @@ export default function ChartContainer() {
           dispatch
         );
     changeTickerName(ticker);
+    // eslint-disable-next-line
   }, [ticker]);
 
   return (

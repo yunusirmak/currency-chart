@@ -102,6 +102,7 @@ export default function AreaChart() {
     return () => {
       chart.current.remove();
     };
+    // eslint-disable-next-line
   }, [chartData]);
 
   // Resize chart on container resizes.

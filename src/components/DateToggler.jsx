@@ -86,6 +86,7 @@ export default function DateToggler() {
   useEffect(() => {
     dateType === "day" &&
       dispatch(updateFirstDate(new Date(lastDate.getTime() - 86400000)));
+    // eslint-disable-next-line
   }, [lastDate]);
 
   //If the date type is daily set the frequency to 15 minutes. If it is a range, set the frequency to 12 hours.
