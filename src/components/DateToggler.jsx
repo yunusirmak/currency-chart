@@ -96,6 +96,7 @@ export default function DateToggler() {
     } else {
       dispatch(updateFreq("12hour"));
     }
+    // eslint-disable-next-line
   }, [dateType]);
 
   //Change the date type depending on the toggle button

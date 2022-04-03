@@ -147,10 +147,10 @@ export default function ChartContainer() {
               </ChartText>
             </ChartTextContainer>
             <FormControl>
-              <InputLabel>Currency</InputLabel>
+              <InputLabel>Döviz</InputLabel>
               <Select
                 value={ticker}
-                label="Currency"
+                label="Döviz"
                 sx={{ width: 130, height: 40 }}
                 onChange={handleChange}
               >
