@@ -137,7 +137,7 @@ export default function DateToggler() {
             <CalendarMonthIcon />
           </ToggleButton>
         </ToggleButtonGroup>
-        <DateContainer>
+        <DateContainer dateType={dateType}>
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
             locale={localeMap["tr"]}
@@ -153,7 +153,7 @@ export default function DateToggler() {
                   dateError === false && dispatch(updateLastDate(newValue));
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} sx={{ width: 150 }} />
+                  <TextField {...params} size="small" sx={{ width: 150 }} />
                 )}
                 mask={maskMap["tr"]}
               />
@@ -175,9 +175,13 @@ export default function DateToggler() {
                 }}
                 renderInput={(startProps, endProps) => (
                   <>
-                    <TextField {...startProps} sx={{ width: 120 }} />
+                    <TextField
+                      size="small"
+                      {...startProps}
+                      sx={{ width: 120 }}
+                    />
                     <Box sx={{ mx: 1 }}> - </Box>
-                    <TextField {...endProps} sx={{ width: 120 }} />
+                    <TextField size="small" {...endProps} sx={{ width: 120 }} />
                   </>
                 )}
               />

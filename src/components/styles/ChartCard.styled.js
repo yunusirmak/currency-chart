@@ -117,7 +117,7 @@ export const DateContainer = styled.div`
     width: 100%;
   }
   @media (min-width: 1020px) {
-    width: 460px;
+    width: ${(props) => (props.dateType === "day" ? "420px" : "475px")};
     margin: 0;
   }
 `;
