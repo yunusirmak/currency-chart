@@ -4,11 +4,41 @@ import { useSelector } from "react-redux";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const columns = [
-  { field: "date", headerName: "Tarih", width: 200 },
-  { field: "open", headerName: "Açılış", width: 120 },
-  { field: "close", headerName: "Kapanış", width: 120 },
-  { field: "high", headerName: "Yüksek", width: 120 },
-  { field: "low", headerName: "Düşük", width: 120 },
+  {
+    field: "date",
+    headerName: "Tarih",
+    width: 200,
+    align: "center",
+    headerAlign: "center",
+  },
+  {
+    field: "open",
+    headerName: "Açılış",
+    width: 120,
+    align: "center",
+    headerAlign: "center",
+  },
+  {
+    field: "close",
+    headerName: "Kapanış",
+    width: 120,
+    align: "center",
+    headerAlign: "center",
+  },
+  {
+    field: "high",
+    headerName: "Yüksek",
+    width: 120,
+    align: "center",
+    headerAlign: "center",
+  },
+  {
+    field: "low",
+    headerName: "Düşük",
+    width: 120,
+    align: "center",
+    headerAlign: "center",
+  },
 ];
 
 export default function DataTable() {
@@ -29,7 +59,12 @@ export default function DataTable() {
   return (
     <ThemeProvider theme={darkTheme}>
       <div
-        style={{ height: 400, width: "100%", marginTop: 25, marginBottom: 25 }}
+        style={{
+          height: 371,
+          width: "100%",
+          marginTop: 40,
+          marginBottom: 39,
+        }}
       >
         <DataGrid
           getRowId={(chartData) => chartData.date}
