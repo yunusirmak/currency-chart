@@ -3,6 +3,7 @@ import ChartTypeToggler from "./ChartTypeToggler";
 import ColumnChart from "./charts/ColumnChart";
 import CandleStickChart from "./charts/CandleStickChart";
 import AreaChart from "./charts/AreaChart";
+import Table from "./charts/Table";
 import DateToggler from "./DateToggler";
 //Styled Components
 import {
@@ -188,6 +189,8 @@ export default function ChartContainer() {
           >
             Yükleniyor...
           </h2>
+        ) : chartType === "table" ? (
+          <Table />
         ) : chartType === "candle" ? (
           <CandleStickChart />
         ) : chartType === "bar" ? (

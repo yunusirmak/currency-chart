@@ -4,6 +4,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import CandlestickChartIcon from "@mui/icons-material/CandlestickChart";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
+import TableChartIcon from "@mui/icons-material/TableChart";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 //redux
 import { updateChartType } from "../redux/chartSlice";
@@ -36,6 +37,9 @@ export default function ColorToggleButton() {
         </ToggleButton>
         <ToggleButton value="candle">
           <CandlestickChartIcon />
+        </ToggleButton>
+        <ToggleButton value="table">
+          <TableChartIcon />
         </ToggleButton>
       </ToggleButtonGroup>
     </ThemeProvider>
