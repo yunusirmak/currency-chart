@@ -172,6 +172,7 @@ export default function DateToggler() {
                 onChange={(newValue, error) => {
                   error ? setDateError(true) : setDateError(false);
                   dateError === false && dispatch(updateRange(newValue));
+                  dateError === false && dispatch(updateLastDate(newValue[1]));
                 }}
                 renderInput={(startProps, endProps) => (
                   <>
